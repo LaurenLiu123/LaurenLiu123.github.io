@@ -31,11 +31,57 @@ ClickHouse提供了许多表引擎，数据在不同的表引擎下会以**不�
 
 ### 观察MergeTree引擎在硬盘上的文件
 
+数据文件的位置定义在配置文件config.xml中
 
+```bash
+# cat /etc/clickhouse-server/config.xml
+<path>/var/lib/clickhouse</path>
 
+# ls -l /var/lib/clickhouse
+drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 access
+drwxr-x---  4 clickhouse clickhouse 4096 Feb 17 11:22 data
+drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 dictionaries_lib
+drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 flags
+drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 format_schemas
+drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 metadata
+drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 metadata_dropped
+drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 preprocessed_configs
+-rw-r-----  1 clickhouse clickhouse   61 Feb 17 11:22 status
+drwxr-x--- 10 clickhouse clickhouse 4096 Feb 17 11:26 store
+drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 tmp
+drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 user_files
+```
 
+重点关注data文件夹，其层次结构如下 data/&lt;db\_name&gt;/&lt;tb\_name&gt;/
 
+```bash
+# tree data/ 
+data
+|-- default #默认数据库 
+|   `-- t1  #MergeTree表名
+|        |-- all_1_1_0 #Part名
+|        |-- detached
+|        `-- format_version.txt
+`-- system #系统表数据库
+    |-- asynchronous_metric_log
+    |-- metric_log
+    |-- query_log 
+    |-- query_thread_log 
+    `-- trace_log
+```
 
+Part文件夹命名方式为 PartitionID\_MinBlockID\_MaxBlockID\_Level
+
+* PartitionID: 属于相同partition的part会拥有同样的PartitionID, 后台线程会将相同PartitionID的part进行合并。
+* MinBlockID和MaxBlockID还有Level的意义在观察一个数据合并的过程就清楚了
+
+![Part&#x5408;&#x5E76;&#x8FC7;&#x7A0B;](.gitbook/assets/image%20%281%29.png)
+
+观察上图合并过程有几个发现:
+
+1. 插入数据生成Part的时候，MinBlockID和MaxBlockID相同, Level为0
+2. 先后两次的插入，BlockID有递增关系。
+3. Part合并后，MinBlockID变为两个Part中MinBlockID较小值, MaxBlockID变为两个Part中MaxBlockID中较大值，Level增1
 
 
 
