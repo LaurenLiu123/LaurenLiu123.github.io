@@ -75,13 +75,18 @@ Part文件夹命名方式为 PartitionID\_MinBlockID\_MaxBlockID\_Level
 * PartitionID: 属于相同partition的part会拥有同样的PartitionID, 后台线程会将相同PartitionID的part进行合并。
 * MinBlockID和MaxBlockID还有Level的意义在观察一个数据合并的过程就清楚了
 
-![Part&#x5408;&#x5E76;&#x8FC7;&#x7A0B;](.gitbook/assets/image%20%281%29.png)
+
+
+![Part&#x5408;&#x5E76;&#x8FC7;&#x7A0B;](.gitbook/assets/image%20%282%29.png)
 
 观察上图合并过程有几个发现:
 
 1. 插入数据生成Part的时候，MinBlockID和MaxBlockID相同, Level为0
-2. 先后两次的插入，BlockID有递增关系。
+2. 先后两次的插入，BlockID有**递增**关系
 3. Part合并后，MinBlockID变为两个Part中MinBlockID较小值, MaxBlockID变为两个Part中MaxBlockID中较大值，Level增1
+4. Part合并后，因为合并后的Part已经含有合并前两个Part的数据，因此合并前的Part可以被后台线程回收
+
+通过MinBlockID和MaxBlockID，我们能知道这个Part下有几个数据Block。通过Level我们能知道合并了几次。
 
 
 
