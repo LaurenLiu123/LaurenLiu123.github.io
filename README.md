@@ -89,7 +89,7 @@ Part文件夹命名方式为 PartitionID\_MinBlockID\_MaxBlockID\_Level
 目前数据在Part下有两种存储模式: WIDE和COMPACT。
 
 * WIDE模式就是Part的**每一个列**都会有\[Column.\]bin 和\[Column.\]mrk文件。
-* COMPACT模式是一种行列混合型，在文件夹下只会有data.bin和data.mrk两个文件。在Part数据量较小时使用，有效减少文件数量。
+* COMPACT模式是一种行列混合型，在文件夹下只会有data.bin和data.mrk两个文件。在Part数据量较小时使用，有效减少小文件数量。
 
 ```text
 #COMPACT形态
