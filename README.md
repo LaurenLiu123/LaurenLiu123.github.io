@@ -37,37 +37,33 @@ ClickHouse提供了许多表引擎，数据在不同的表引擎下会以**不�
 # cat /etc/clickhouse-server/config.xml
 <path>/var/lib/clickhouse</path>
 
-# ls -l /var/lib/clickhouse
-drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 access
-drwxr-x---  4 clickhouse clickhouse 4096 Feb 17 11:22 data
-drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 dictionaries_lib
-drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 flags
-drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 format_schemas
-drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 metadata
-drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 metadata_dropped
-drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 preprocessed_configs
--rw-r-----  1 clickhouse clickhouse   61 Feb 17 11:22 status
-drwxr-x--- 10 clickhouse clickhouse 4096 Feb 17 11:26 store
-drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 tmp
-drwxr-x---  2 clickhouse clickhouse 4096 Feb 17 11:22 user_files
+# tree -L 1 /var/lib/clickhouse
+/var/lib/clickhouse
+|-- access
+|-- data
+|-- dictionaries_lib
+|-- flags
+|-- format_schemas
+|-- metadata
+|-- metadata_dropped
+|-- preprocessed_configs
+|-- status
+|-- store
+|-- tmp
+`-- user_files
 ```
 
 重点关注data文件夹，其层次结构如下 data/&lt;db\_name&gt;/&lt;tb\_name&gt;/
 
-```bash
+```text
 # tree data/ 
 data
-|-- default #默认数据库 
-|   `-- t1  #MergeTree表名
-|        |-- all_1_1_0 #Part名
-|        |-- detached
+|-- default                           #默认数据库
+|   `-- t1                            #MergeTree表
+|        |-- all_1_1_0                #Part文件夹
+|        |-- detached                 
 |        `-- format_version.txt
-`-- system #系统表数据库
-    |-- asynchronous_metric_log
-    |-- metric_log
-    |-- query_log 
-    |-- query_thread_log 
-    `-- trace_log
+`-- system                            #系统表数据库
 ```
 
 Part文件夹命名方式为 PartitionID\_MinBlockID\_MaxBlockID\_Level
