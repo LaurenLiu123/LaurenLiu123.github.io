@@ -6,13 +6,13 @@
 
 ClickHouse提供了许多表引擎，数据在不同的表引擎下会以**不同**的方式存储。MergeTree系列是**最广泛使用**的表引擎系列，该系列包括以下引擎：
 
-* MergeTree
-* ReplacingMergeTree
-* SummingMergeTree
-* AggregatingMergeTree
-* CollapsingMergeTree
-* VersionedCollapsingMergeTree
-* GraphiteMergeTree
+* _MergeTree_ : __合并树引擎 
+* _ReplacingMergeTree_ : 能够去除重复数据。**不能保证查询时没有重复数据，**因去重操作只在数据合并时发生
+* _SummingMergeTree_ : 在数据合并时能将主键相同的数据合并为一条，数值数据求和聚合
+* _AggregatingMergeTree_ ：在数据合并时能将主键相同的数据合并为一条，聚合方式用户定义
+* _CollapsingMergeTree_ 
+* _VersionedCollapsingMergeTree_
+* _GraphiteMergeTree_
 
 ### MergeTree引擎的特点
 
