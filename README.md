@@ -88,7 +88,36 @@ Part文件夹命名方式为 PartitionID\_MinBlockID\_MaxBlockID\_Level
 
 通过MinBlockID和MaxBlockID，我们能知道这个Part下有几个数据Block。通过Level我们能知道合并了几次。
 
+**Part文件夹中的文件**
 
+目前数据在Part下有两种存储模式: WIDE和COMPACT。
+
+* WIDE模式就是Part的**每一个列**都会有\[Column.\]bin 和\[Column.\]mrk文件。
+* COMPACT模式是一种行列混合型，在文件夹下只会有data.bin和data.mrk两个文件。在Part数据量较小时使用，有效减少文件数量。
+
+```text
+#COMPACT形态
+|-- checksums.txt                      #part下各个文件的大小和校验
+|-- columns.txt                        #含有这个Part下的column名和类型
+|-- count.txt                          #该part下的数据行数
+|-- data.bin                           #COMPACT模式数据文件
+|-- data.mrk3                          #COMPACT模式数据标记文件
+|-- default_compression_codec.txt      #默认压缩算法
+`-- primary.idx                        #主键索引
+
+#WIDE形态
+|-- c1.bin                             #c1列的数据文件
+|-- c1.mrk2                            #c1列的数据标记文件
+|-- c2.bin                             #c2列的数据文件
+|-- c2.mrk2                            #c2列的数据标记文件
+|-- checksums.txt                      #part下各个文件的大小和校验
+|-- columns.txt                        #含有这个Part下的column名和类型
+|-- count.txt                          #该part下的数据行数
+|-- default_compression_codec.txt      #默认压缩算法
+`-- primary.idx                        #主键索引
+```
+
+![WIDE&#x548C;COMAPCT&#x5B58;&#x50A8;&#x56FE;&#x793A;](.gitbook/assets/image%20%284%29.png)
 
 
 
